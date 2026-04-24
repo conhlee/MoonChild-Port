@@ -1,9 +1,10 @@
 #include "platform_system.h"
 
 #include <ogcsys.h>
-#include <gccore.h>
-#include <cstdio>
+#include <fat.h>
 #include <wiiuse/wpad.h>
+#include <cstdio>
+#include <unistd.h>
 
 #include "framewrk/frm_int.hpp"
 #include "moonchild/mc.hpp"
@@ -20,6 +21,7 @@ bool initSystem()
 {
 	__STM_Init();
 	SYS_STDIO_Report(true);
+	fatInitDefault();
 	return true;
 }
 
@@ -84,24 +86,40 @@ void advanceTickSchedule()
 // Called by the game to get the full path to a file
 char *FullPath(char *filename)
 {
-	return filename;
+	static char buffer[4096];
+	if (!filename)
+		return nullptr;
+	snprintf(buffer, sizeof(buffer), "/moonchild_assets/moonchild/%s", filename);
+	return buffer;
 }
 
 // Called by the game to get the full path to an audio file
 char *FullAudioPath(char *filename)
 {
-	return filename;
+	static char buffer[4096];
+	if (!filename)
+		return nullptr;
+	snprintf(buffer, sizeof(buffer), "/moonchild_assets/audio/%s", filename);
+	return buffer;
 }
 
 char *FullMoviePath(char *filename)
 {
-	return filename;
+	static char buffer[4096];
+	if (!filename)
+		return nullptr;
+	snprintf(buffer, sizeof(buffer), "/moonchild_assets/movies/%s", filename);
+	return buffer;
 }
 
 // Called by the game to get the full path to a writable file (Only hiscore file)
 char *FullWritablePath(char *filename)
 {
-	return filename;
+	static char buffer[4096];
+	if (!filename)
+		return nullptr;
+	snprintf(buffer, sizeof(buffer), "/moonchild_save/%s", filename);
+	return buffer;
 }
 
 // Internal method (only used here) to load a TGA file
