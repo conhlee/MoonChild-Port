@@ -1,34 +1,45 @@
 #include "platform_movie_player.h"
 
+#include <libdragon.h>
+
 const char* getMoviePath(MovieID id)
 {
     switch (id)
     {
         case MOVIE_INTRO:
-            return "intro.h264";
+            return "intro";
         
         case MOVIE_BUMPER_1_2:
-            return "bumper12.h264";
+            return "bumper12";
         
         case MOVIE_BUMPER_2_3:
-            return "bumper23.h264";
+            return "bumper23";
         
         case MOVIE_BUMPER_3_4:
-            return "bumper34.h264";
+            return "bumper34";
         
         case MOVIE_EXTRO:
-            return "extro.h264";
+            return "extro";
         
         case MOVIE_GAME_OVER:
-            return "gameover.h264";
+            return "gameover";
         
         default:
             return nullptr;
     }
 }
 
+struct MoviePlayer::Impl
+{
+    video_t* video;
+    wav64_t* audio;
+    yuv_blitter_t* yuvBlitter;
+    video_info_t* videoInfo;
+};
+
 MoviePlayer::MoviePlayer()
 {
+    impl = new Impl();
     playing = false;
     streamEnded = false;
     movieDurationSec = 0.0;
@@ -39,33 +50,91 @@ MoviePlayer::MoviePlayer()
 MoviePlayer::~MoviePlayer()
 {
     clearState();
+    delete impl;
+    impl = nullptr;
 }
 
 void MoviePlayer::clearState()
 {
+    if (!impl)
+        return;
+    
+    if (impl->yuvBlitter)
+        yuv_blitter_free(impl->yuvBlitter);
+    
+    if (impl->videoInfo)
+        free(impl->videoInfo);
+    
+    if (impl->audio)
+        wav64_close(impl->audio);
+    
+    if (impl->video)
+        video_close(impl->video);
 }
 
 bool MoviePlayer::playFile(char *filePath, MovieDoneCallback callback, void *userData)
 {
+    clearState();
+    if (!filePath)
+        return false;
+
+    static char videoFilePath[4096];
+    static char audioFilePath[4096];
+
+    snprintf(videoFilePath, sizeof(videoFilePath), "%s.h264", filePath);
+    snprintf(audioFilePath, sizeof(audioFilePath), "%s.wav64", filePath);
+
+    impl->video = video_open(videoFilePath, NULL);
+    if (!impl->video)
+        return false;
+    
+    impl->videoInfo = &video_get_info(impl->video);
+    
+    yuv_init();
+    impl->yuvBlitter = &yuv_blitter_new(impl->videoInfo->width, impl->videoInfo->height, 0, 0, NULL, &impl->videoInfo->colorspace);
+
+    display_set_fps_limit(impl->videoInfo->framerate);
+
+    impl->audio = wav64_load(audioFilePath, NULL);
+    if (!impl->audio)
+        return false;
+
     return true;
 }
 
 void MoviePlayer::invokeDoneCallback(bool naturalEnd)
 {
+    MovieDoneCallback callback = doneCallback;
+    void *userData = doneUserData;
+    doneCallback = nullptr;
+    doneUserData = nullptr;
+    if (callback)
+        callback(naturalEnd, userData);
 }
 
 void MoviePlayer::stop(bool naturalEnd)
 {
+    if (!playing)
+    {
+        clearState();
+        return;
+    }
+
+    clearState();
+    invokeDoneCallback(naturalEnd);
 }
 
 bool MoviePlayer::isPlaying()
 {
-    return false;
+    return isPlaying;
 }
 
 bool MoviePlayer::decodeNextFrame()
 {
-    return false;
+    if (!playing)
+        return false;
+    
+    return true;
 }
 
 void MoviePlayer::presentCurrentFrame(uint8_t *pixels, int width, int height, int pitch)
@@ -74,4 +143,6 @@ void MoviePlayer::presentCurrentFrame(uint8_t *pixels, int width, int height, in
 
 void MoviePlayer::update(uint8_t *pixels, int width, int height, int pitch)
 {
+    if (!playing)
+        return;
 }

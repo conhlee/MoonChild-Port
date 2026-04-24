@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-surface_t gameSurface;
 uint8_t *pixelBuffer;
 int pixelBufferPitch = 0;
+
+surface_t gameSurface;
 
 bool initVideo()
 {
@@ -33,6 +34,7 @@ void blitScreen()
     surface_t* disp = display_get();
     rdpq_attach_clear(disp, NULL);
     rdpq_set_mode_standard();
+    memcpy(pixelBuffer, gameSurface.buffer, pixelBufferPitch * GAME_HEIGHT);
     rdpq_tex_blit(&gameSurface, 0, 0, NULL);
     rdpq_detach_show();
 }
