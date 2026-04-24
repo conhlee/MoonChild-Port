@@ -1,5 +1,5 @@
 V=1
-SOURCE_DIR=source
+SOURCE_DIR=src
 PLATFORM_DIR=platform
 BUILD_DIR=build
 PROJECT_NAME=moonchild

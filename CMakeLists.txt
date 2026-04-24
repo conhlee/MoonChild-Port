@@ -64,10 +64,10 @@ endif()
 
 # All C/C++ sources under src/ (subfolders included). Re-runs CMake when files are added/removed.
 file(GLOB_RECURSE MOONCHILD_SOURCES CONFIGURE_DEPENDS
-  "${CMAKE_CURRENT_SOURCE_DIR}/source/*.c"
-  "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cc"
-  "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cxx"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx"
   "${CMAKE_CURRENT_SOURCE_DIR}/platform/sdl/*.c"
   "${CMAKE_CURRENT_SOURCE_DIR}/platform/sdl/*.cc"
   "${CMAKE_CURRENT_SOURCE_DIR}/platform/sdl/*.cpp"
@@ -78,9 +78,9 @@ add_executable(moonchild_shell ${MOONCHILD_SOURCES})
 
 target_include_directories(moonchild_shell PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/platform"
-  "${CMAKE_CURRENT_SOURCE_DIR}/source"
-  "${CMAKE_CURRENT_SOURCE_DIR}/source/moonchild"
-  "${CMAKE_CURRENT_SOURCE_DIR}/source/framewrk"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/moonchild"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/framewrk"
   "${FFMPEG_INCLUDE_DIR}"
 )
 
