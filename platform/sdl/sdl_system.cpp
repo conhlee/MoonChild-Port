@@ -59,7 +59,7 @@ bool pollEvents()
 	while (SDL_PollEvent(&e))
 	{
 		if (e.type == SDL_QUIT)
-			return false;
+			return true;
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
 		{
 			if (moviePlayer && moviePlayer->isPlaying())
@@ -149,7 +149,7 @@ bool pollEvents()
 		}
 	}
 
-	return true;
+	return false;
 }
 
 void syncMouse()

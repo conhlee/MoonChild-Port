@@ -52,7 +52,7 @@ extern int g_MouseXCurrent;
 extern int g_MouseYCurrent;
 
 
-#define log_out(x) 
+#define log_out(x) fprintf(stderr, "debug: %s\r\n", x);
 
 #endif
 

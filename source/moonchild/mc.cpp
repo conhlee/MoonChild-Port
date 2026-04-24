@@ -1126,8 +1126,7 @@ int enablefastfile(void)
   rc = FastFileInit(FullPath("mc.art"),16);
   if (!rc)
     {
-      fprintf(stderr, "couldn't find mc.art\r\n");
-//      log_out("couldn't find mc.art");
+      log_out("couldn't find mc.art");
       return 0;
     }
 

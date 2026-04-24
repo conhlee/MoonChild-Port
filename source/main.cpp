@@ -4,6 +4,7 @@
 
 #define _IN_MAIN
 #include "framewrk/frm_int.hpp"
+#include "framewrk/frm_wrk.hpp"
 #include "moonchild/mc.hpp"
 #include "moonchild/globals.hpp"
 #include "moonchild/prefs.hpp"
@@ -14,6 +15,8 @@ int g_MouseXDown = 0;
 int g_MouseYDown = 0;
 int g_MouseXCurrent = 0;
 int g_MouseYCurrent = 0;
+
+#define log(x) fprintf(stderr, "debug: %s\r\n", x);
 
 bool initMoonChild(unsigned char *pixelBuffer, int width, int height)
 {
@@ -40,6 +43,8 @@ bool initMoonChild(unsigned char *pixelBuffer, int width, int height)
         //EXIT!
         return false;
     }
+
+	return true;
 }
    
 // if someone wants to reset progress (aka start over). This is how to do it
@@ -80,7 +85,10 @@ bool gameTick(uint8_t *pixels, int width, int height, int pitch)
         {
             heartbeat = (HEARTBEAT_FN) heartbeat();
             if (heartbeat == NULL) // No heartbeat anymore, Let's close
+			{
+				log("heartbeat stopped; closing game");
 				return false;
+			}
         }
     }
 
@@ -91,14 +99,14 @@ int main(int argc, char **argv)
 {
 	if (!initSystem())
 	{
-		printf("System failed to init");
+		log("system failed to init");
 		shutdownSystem();
 		return 1;
 	}
 
 	if (!initVideo())
 	{
-		printf("Video failed to init");
+		log("video failed to init");
 		shutdownVideo();
 		shutdownSystem();
 		return 1;
@@ -106,7 +114,7 @@ int main(int argc, char **argv)
 
 	if (!initAudio())
 	{
-		printf("Audio failed to init");
+		log("audio failed to init");
 		shutdownAudio();
 		shutdownVideo();
 		shutdownSystem();
@@ -117,7 +125,10 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		if (pollEvents())
+		{
+			log("quit event received");
 			break;
+		}
 		
 		syncMouse();
 
@@ -126,12 +137,19 @@ int main(int argc, char **argv)
 		if (moviePlayer && moviePlayer->isPlaying())
 			moviePlayer->update(pixelBuffer, GAME_WIDTH, GAME_HEIGHT, pixelBufferPitch);
 		else if (!gameTick(pixelBuffer, GAME_WIDTH, GAME_HEIGHT, pixelBufferPitch))
+		{
+			log("game stopped ticking; exit");
 			break;
+		}
 
 		blitScreen();
 
 		advanceTickSchedule();
 	}
+
+	shutdownAudio();
+	shutdownVideo();
+	shutdownSystem();
 
 	return 0;
 }
