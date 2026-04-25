@@ -167,7 +167,7 @@ int FastFileInit( char *fname, int max_handles )
 
 		fread(&dwFECnt, 1, 4, fHndl);
 
-#ifdef PLATFORM_N64
+#if defined(PLATFORM_N64) || defined(PLATFORM_WII)
 		dwFECnt = BIGENDIAN32(dwFECnt);
 #endif
 
@@ -177,7 +177,7 @@ int FastFileInit( char *fname, int max_handles )
 		pFE = (FILEENTRY *)(pBase+4);
 		fread(pFE, 1, sizeof(FILEENTRY) * dwFECnt, fHndl);
 
-#ifdef PLATFORM_N64
+#if defined(PLATFORM_N64) || defined(PLATFORM_WII)
 		// fix endianness of offsets
 		for (int i = 0; i < dwFECnt; i++)
 			pFE[i].offset = BIGENDIAN32(pFE[i].offset);
