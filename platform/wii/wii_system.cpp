@@ -5,6 +5,7 @@
 #include <wiiuse/wpad.h>
 #include <cstdio>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "framewrk/frm_int.hpp"
 #include "moonchild/mc.hpp"
@@ -17,11 +18,19 @@ extern s32 __STM_Init();
 extern void __exception_closeall();
 extern s32 __IOS_ShutdownSubsystems();
 
+#define log(x) fprintf(stderr, "debug: %s\r\n", x);
+
 bool initSystem()
 {
 	__STM_Init();
 	SYS_STDIO_Report(true);
-	fatInitDefault();
+
+	if (!fatInitDefault())
+	{
+		log("FAT failed to initialize");
+		return false;
+	}
+
 	return true;
 }
 

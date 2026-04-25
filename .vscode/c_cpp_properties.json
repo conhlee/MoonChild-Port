@@ -2,9 +2,9 @@
     "env": {
         "defaultIncludePaths": [
             "${workspaceFolder}/platform/**",
-            "${workspaceFolder}/source/**",
-            "${workspaceFolder}/source/framewrk/**",
-            "${workspaceFolder}/source/moonchild/**"
+            "${workspaceFolder}/src/**",
+            "${workspaceFolder}/src/framewrk/**",
+            "${workspaceFolder}/src/moonchild/**"
         ],
         "defaultDefines": [],
         "rvlIncludePaths": [

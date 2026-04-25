@@ -47,7 +47,7 @@ void MoviePlayer::clearState()
 
 bool MoviePlayer::playFile(char *filePath, MovieDoneCallback callback, void *userData)
 {
-    return true;
+    return false;
 }
 
 void MoviePlayer::invokeDoneCallback(bool naturalEnd)

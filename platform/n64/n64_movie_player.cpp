@@ -93,7 +93,7 @@ bool MoviePlayer::playFile(char *filePath, MovieDoneCallback callback, void *use
     yuv_init();
     impl->yuvBlitter = &yuv_blitter_new(impl->videoInfo->width, impl->videoInfo->height, 0, 0, NULL, &impl->videoInfo->colorspace);
 
-    display_set_fps_limit(impl->videoInfo->framerate);
+    //display_set_fps_limit(impl->videoInfo->framerate);
 
     impl->audio = wav64_load(audioFilePath, NULL);
     if (!impl->audio)
@@ -126,7 +126,7 @@ void MoviePlayer::stop(bool naturalEnd)
 
 bool MoviePlayer::isPlaying()
 {
-    return isPlaying;
+    return playing;
 }
 
 bool MoviePlayer::decodeNextFrame()

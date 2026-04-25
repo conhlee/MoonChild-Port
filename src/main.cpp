@@ -73,7 +73,7 @@ void enableCheat()
     }
 }
 
-bool gameTick(uint8_t *pixels, int width, int height, int pitch)
+bool gameTick()
 {    
     audio->checkVolume();
     
@@ -85,10 +85,7 @@ bool gameTick(uint8_t *pixels, int width, int height, int pitch)
         {
             heartbeat = (HEARTBEAT_FN) heartbeat();
             if (heartbeat == NULL) // No heartbeat anymore, Let's close
-			{
-				log("heartbeat stopped; closing game");
 				return false;
-			}
         }
     }
 
@@ -125,10 +122,7 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		if (pollEvents())
-		{
-			log("quit event received");
 			break;
-		}
 		
 		syncMouse();
 
@@ -136,11 +130,8 @@ int main(int argc, char **argv)
 
 		if (moviePlayer && moviePlayer->isPlaying())
 			moviePlayer->update(pixelBuffer, GAME_WIDTH, GAME_HEIGHT, pixelBufferPitch);
-		else if (!gameTick(pixelBuffer, GAME_WIDTH, GAME_HEIGHT, pixelBufferPitch))
-		{
-			log("game stopped ticking; exit");
+		else if (!gameTick())
 			break;
-		}
 
 		blitScreen();
 

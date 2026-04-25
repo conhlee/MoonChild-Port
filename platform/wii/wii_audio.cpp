@@ -1,5 +1,7 @@
 #include "platform_audio.h"
 
+#include <cstdio>
+
 bool initAudio()
 {
     return true;
