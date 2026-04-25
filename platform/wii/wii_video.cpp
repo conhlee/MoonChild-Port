@@ -163,10 +163,12 @@ bool initVideo()
 
     GX_InvalidateTexAll();
 
-	pixelBufferPitch = GAME_WIDTH * BYTES_PER_PIXEL;
-	pixelBuffer = (uint8_t*)memalign(32, pixelBufferPitch * GAME_HEIGHT * sizeof(uint32_t) + 32);
+    pixelBufferPitch = GAME_WIDTH * BYTES_PER_PIXEL;
+    pixelBuffer = new uint8_t[pixelBufferPitch * GAME_HEIGHT];
+    memset(pixelBuffer, 0, pixelBufferPitch * GAME_HEIGHT);
+    
 	fbGX = (uint32_t *)memalign(32, pixelBufferPitch * GAME_HEIGHT * sizeof(uint32_t) + 32);
-    memset(pixelBuffer, 0, pixelBufferPitch * GAME_HEIGHT * sizeof(uint32_t) + 32);
+    memset(fbGX, 0, pixelBufferPitch * GAME_HEIGHT * sizeof(uint32_t) + 32);
     GX_InitTexObj(&fbTex, fbGX, pixelBufferPitch, GAME_HEIGHT, GX_TF_RGBA8, GX_CLAMP, GX_CLAMP, GX_FALSE);
 	GX_InitTexObjFilterMode(&fbTex, GX_NEAR, GX_NEAR); // Nearest filtering for 4:3
 
